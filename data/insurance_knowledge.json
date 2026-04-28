@@ -1,0 +1,28 @@
+[
+  {
+    "PolicyType": "TermLife",
+    "AcordCode": "TL-100",
+    "CoveragePeriod": "10, 20, or 30 Years",
+    "Topic": "Term Life Insurance Policy Definition and Eligibility",
+    "Content": "Term life insurance (ACORD Plan Code: TL) provides a DeathBenefitAmount for a specified CoveragePeriod. If the InsuredRisk expires during this term, the Beneficiary receives the policy face amount. It accrues zero CashSurrenderValue. Underwriting typically requires a ParamedicalExam, though SimplifiedIssue options exist with a SubstandardRisk rating and higher premiums. Ideal for temporary debt protection."
+  },
+  {
+    "PolicyType": "WholeLife",
+    "AcordCode": "WL-200",
+    "CoveragePeriod": "Lifetime (Age 121)",
+    "Topic": "Whole Life Permanent Insurance and Cash Value",
+    "Content": "Whole Life (ACORD Plan Code: WL) is a PermanentLife insurance product remaining in force for the Insured's entire lifetime, contingent on timely PremiumPayments. It features a guaranteed DeathBenefit and a CashValueAccumulation component that grows at a fixed GuaranteedInterestRate. Policyowners may execute a PolicyLoan against the CashSurrenderValue."
+  },
+  {
+    "PolicyType": "UniversalLife",
+    "AcordCode": "UL-300",
+    "CoveragePeriod": "Lifetime Flexible",
+    "Topic": "Universal Life Insurance Flexibility",
+    "Content": "Universal Life (ACORD Plan Code: UL) offers FlexiblePremium payments and an AdjustableDeathBenefit. The CashValue component is credited with interest based on current market rates, subject to a GuaranteedMinimumRate. This policy type allows the Policyowner to use accumulated CashValue to cover CostOfInsurance charges, offering high adaptability for changing financial risk profiles."
+  },
+  {
+    "ProcessArea": "Claims",
+    "Topic": "Life Insurance Claim Adjudication Process",
+    "Content": "The ClaimAdjudication process requires the Claimant to submit a certified DeathCertificate and a completed ClaimantStatement. Standard processing time is 14 to 60 days. A ClaimDenial may occur due to MaterialMisrepresentation on the InitialApplication, PolicyLapse due to non-payment of premiums, or if the loss occurs within the ContestabilityPeriod (typically 2 years) under the SuicideClause exclusion."
+  }
+]
