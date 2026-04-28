@@ -1,20 +1,12 @@
 import json
-import os
-from dotenv import load_dotenv
-from typing import List
-from pydantic import ValidationError
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
-from schema import PolicyRecord
 from config import settings
-
-
-load_dotenv()
+from parser import recursive_json_to_text  # <-- Import the isolated parser
 
 class KnowledgeBaseBuilder:
     def __init__(self):
-        # Everything is pulled cleanly from the settings object
         self.data_path = settings.data_file_path
         self.persist_dir = settings.chroma_persist_dir
         self.embeddings = OpenAIEmbeddings(
@@ -22,50 +14,42 @@ class KnowledgeBaseBuilder:
             api_key=settings.openai_api_key
         )
 
-    def _load_and_validate_data(self) -> List[PolicyRecord]:
-        """Loads JSON and strictly validates it against the Pydantic schema."""
+    def build(self):
+        print("Loading dynamic JSON structure...")
         with open(self.data_path, "r", encoding="utf-8") as f:
             raw_data = json.load(f)
 
-        valid_records = []
-        for item in raw_data:
-            try:
-                record = PolicyRecord(**item)
-                valid_records.append(record)
-            except ValidationError as e:
-                print(f"Skipping invalid record. Error: {e}")
-        return valid_records
-
-    def _create_documents(self, records: List[PolicyRecord]) -> List[Document]:
-        """Maps validated records into LangChain Document objects with rich metadata."""
         documents = []
-        for record in records:
-            doc = Document(
-                page_content=record.Content,
-                metadata={
-                    "topic": record.Topic,
-                    "policy_type": record.PolicyType,
-                    "acord_code": record.AcordCode
-                }
-            )
-            documents.append(doc)
-        return documents
 
-    def build(self):
-        """Orchestrates the ingestion pipeline."""
-        print("Validating source data...")
-        records = self._load_and_validate_data()
+        if isinstance(raw_data, dict):
+            for category, content in raw_data.items():
+                print(f"Parsing generic category: {category}...")
 
-        print("Constructing document representations...")
-        documents = self._create_documents(records)
+                if isinstance(content, list):
+                    for item in content:
+                        # Use the imported pure function
+                        flat_text = recursive_json_to_text(item)
+                        doc_title = item.get("PolicyType", item.get("question", "General Info"))
+                        documents.append(Document(
+                            page_content=flat_text,
+                            metadata={"category": category, "title": doc_title}
+                        ))
+                else:
+                    # Use the imported pure function
+                    flat_text = recursive_json_to_text(content)
+                    documents.append(Document(
+                        page_content=flat_text,
+                        metadata={"category": category}
+                    ))
 
-        print(f"Persisting vector store to {self.persist_dir}...")
+        print(f"Constructed {len(documents)} dynamic documents. Persisting to ChromaDB...")
+
         Chroma.from_documents(
             documents=documents,
             embedding=self.embeddings,
             persist_directory=self.persist_dir
         )
-        print(f"Success: {len(documents)} records ingested.")
+        print("Success: Future-proof knowledge base ingested!")
 
 if __name__ == "__main__":
     builder = KnowledgeBaseBuilder()
