@@ -2,6 +2,7 @@ from typing import Annotated, TypedDict
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.tools import create_retriever_tool
+from langchain_core.messages import trim_messages
 from langgraph.graph import StateGraph, START
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -11,55 +12,68 @@ from config import settings
 
 # 1. Initialize Vector Store Retriever
 embeddings = OpenAIEmbeddings(
-    model=settings.embedding_model, api_key=settings.openai_api_key
+    model=settings.embedding_model,
+    api_key=settings.openai_api_key
 )
 vector_store = Chroma(
-    persist_directory=settings.chroma_persist_dir, embedding_function=embeddings
+    persist_directory=settings.chroma_persist_dir,
+    embedding_function=embeddings
 )
 
-# k=2 keeps the context window lean since we have highly dense, specific records
+# k=2 optimization: Keeps the payload lean and limits input token cost
 retriever = vector_store.as_retriever(search_kwargs={"k": 2})
 
 # 2. Create the RAG Tool
 retriever_tool = create_retriever_tool(
     retriever,
     "life_insurance_knowledge_base",
-    "ALWAYS use this tool first when asked about life insurance policies, benefits, riders, claims, or eligibility. Do not attempt to answer from memory.",
+    "ALWAYS use this tool first when asked about life insurance policies, benefits, riders, claims, or eligibility. Do not attempt to answer from memory."
 )
 tools = [retriever_tool]
-
 
 # 3. Define the Agent State
 class State(TypedDict):
     # `add_messages` ensures the conversational history is appended, not overwritten
     messages: Annotated[list, add_messages]
 
-
-# 4. Initialize the LLM
+# 4. Initialize the LLM with cost-saving constraints
 llm = ChatOpenAI(
     model=settings.chat_model,
-    temperature=0,  # 0 ensures factual, deterministic answers
-    api_key=settings.openai_api_key,
+    temperature=0,
+    max_tokens=250, # Budget Optimization: Hard cap on output length
+    api_key=settings.openai_api_key
 )
 llm_with_tools = llm.bind_tools(tools)
 
-
-# 5. Define the Reasoning Node
+# 5. Define the Reasoning Node with Rolling Window Memory
 def chatbot(state: State):
     system_message = {
         "role": "system",
         "content": (
-            "You are a helpful, professional Life Insurance Support Assistant. "
-            "Use the 'life_insurance_knowledge_base' tool to answer user inquiries accurately. "
-            "When you use the tool, seamlessly integrate the ACORD terminology into a natural, easy-to-understand response. "
-            "If a user asks something completely unrelated to life insurance, politely steer the conversation back. "
-            "If the answer isn't in your knowledge base, admit that you don't have that specific information."
-        ),
+            "You are an expert Life Insurance Support Assistant. Your primary directive is accuracy.\n\n"
+            "CORE RULES:\n"
+            "1. STRICT GROUNDING: ALWAYS use the 'life_insurance_knowledge_base' tool first for any policy, claims, or eligibility questions. Do NOT answer from prior training data.\n"
+            "2. ZERO HALLUCINATION: If the tool does not return the answer, you must state: 'I do not have that specific information in my current knowledge base.' Do not guess.\n"
+            "3. PROFESSIONAL TONE: Seamlessly integrate ACORD terminology into your responses, but ensure the final output is easy for a layman to understand.\n"
+            "4. BOUNDARIES: If a user asks about software engineering, coding, or anything outside of life insurance, politely decline and steer the conversation back to insurance."
+        )
     }
-    messages = [system_message] + state["messages"]
-    response = llm_with_tools.invoke(messages)
-    return {"messages": [response]}
 
+    # Prepend the system prompt to the chat history
+    messages_with_system = [system_message] + state["messages"]
+
+    # Latency & Cost Optimization: Strict Rolling Window
+    # Trims old context while permanently preserving the system prompt
+    trimmed_messages = trim_messages(
+        messages_with_system,
+        max_tokens=2000,
+        strategy="last",
+        token_counter=llm,
+        include_system=True
+    )
+
+    response = llm_with_tools.invoke(trimmed_messages)
+    return {"messages": [response]}
 
 # 6. Build the LangGraph
 graph_builder = StateGraph(State)
