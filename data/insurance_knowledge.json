@@ -1,28 +1,132 @@
-[
-  {
-    "PolicyType": "TermLife",
-    "AcordCode": "TL-100",
-    "CoveragePeriod": "10, 20, or 30 Years",
-    "Topic": "Term Life Insurance Policy Definition and Eligibility",
-    "Content": "Term life insurance (ACORD Plan Code: TL) provides a DeathBenefitAmount for a specified CoveragePeriod. If the InsuredRisk expires during this term, the Beneficiary receives the policy face amount. It accrues zero CashSurrenderValue. Underwriting typically requires a ParamedicalExam, though SimplifiedIssue options exist with a SubstandardRisk rating and higher premiums. Ideal for temporary debt protection."
-  },
-  {
-    "PolicyType": "WholeLife",
-    "AcordCode": "WL-200",
-    "CoveragePeriod": "Lifetime (Age 121)",
-    "Topic": "Whole Life Permanent Insurance and Cash Value",
-    "Content": "Whole Life (ACORD Plan Code: WL) is a PermanentLife insurance product remaining in force for the Insured's entire lifetime, contingent on timely PremiumPayments. It features a guaranteed DeathBenefit and a CashValueAccumulation component that grows at a fixed GuaranteedInterestRate. Policyowners may execute a PolicyLoan against the CashSurrenderValue."
-  },
-  {
-    "PolicyType": "UniversalLife",
-    "AcordCode": "UL-300",
-    "CoveragePeriod": "Lifetime Flexible",
-    "Topic": "Universal Life Insurance Flexibility",
-    "Content": "Universal Life (ACORD Plan Code: UL) offers FlexiblePremium payments and an AdjustableDeathBenefit. The CashValue component is credited with interest based on current market rates, subject to a GuaranteedMinimumRate. This policy type allows the Policyowner to use accumulated CashValue to cover CostOfInsurance charges, offering high adaptability for changing financial risk profiles."
-  },
-  {
+{
+  "policies": [
+    {
+      "PolicyType": "TermLife",
+      "AcordCode": "TL-100",
+      "CoveragePeriod": "10, 20, or 30 years",
+      "Eligibility": "Typically individuals aged 18–65. May require a medical exam, though simplified issue options exist with higher premiums.",
+      "Benefits": [
+        "Lower premiums compared to permanent life insurance",
+        "Provides a fixed death benefit to beneficiaries",
+        "Good for temporary needs like loans, mortgages, or income replacement"
+      ],
+      "Limitations": [
+        "No cash value or savings component",
+        "Coverage expires after the selected term",
+        "Renewal after term can be expensive"
+      ],
+      "SimpleExplanation": "Term life insurance covers you for a fixed number of years. If you pass away during that time, your family receives money. It does not build savings.",
+      "TechnicalExplanation": "Term life insurance provides a DeathBenefitAmount for a specified CoveragePeriod. It does not accumulate CashSurrenderValue. Underwriting may require a ParamedicalExam. SimplifiedIssue options may include SubstandardRisk ratings.",
+      "Keywords": [
+        "term life",
+        "temporary insurance",
+        "cheap life insurance",
+        "no savings",
+        "fixed term coverage"
+      ]
+    },
+    {
+      "PolicyType": "WholeLife",
+      "AcordCode": "WL-200",
+      "CoveragePeriod": "Lifetime (up to age 121)",
+      "Eligibility": "Available for most age groups depending on insurer rules. Requires regular premium payments.",
+      "Benefits": [
+        "Lifetime coverage",
+        "Guaranteed death benefit",
+        "Builds cash value over time",
+        "Ability to take loans against cash value"
+      ],
+      "Limitations": [
+        "Higher premiums than term life insurance",
+        "Less flexibility in premium payments"
+      ],
+      "SimpleExplanation": "Whole life insurance lasts your entire life and also builds savings that you can use or borrow from.",
+      "TechnicalExplanation": "Whole Life is a PermanentLife insurance product with guaranteed DeathBenefit and CashValueAccumulation. Cash value grows at a fixed GuaranteedInterestRate and allows PolicyLoan access.",
+      "Keywords": [
+        "whole life",
+        "permanent insurance",
+        "cash value",
+        "lifetime coverage",
+        "savings insurance"
+      ]
+    },
+    {
+      "PolicyType": "UniversalLife",
+      "AcordCode": "UL-300",
+      "CoveragePeriod": "Lifetime with flexible terms",
+      "Eligibility": "Suitable for individuals seeking flexible premium payments and adjustable coverage.",
+      "Benefits": [
+        "Flexible premium payments",
+        "Adjustable death benefit",
+        "Cash value grows based on interest rates",
+        "Can use cash value to pay premiums"
+      ],
+      "Limitations": [
+        "Returns depend on market interest rates",
+        "Requires active management",
+        "Can lapse if not properly funded"
+      ],
+      "SimpleExplanation": "Universal life insurance gives you flexibility. You can adjust how much you pay and how much coverage you want, and it also builds savings.",
+      "TechnicalExplanation": "Universal Life offers FlexiblePremium payments and AdjustableDeathBenefit. CashValue is credited based on market rates with a GuaranteedMinimumRate. Policyowners may use cash value to cover CostOfInsurance.",
+      "Keywords": [
+        "universal life",
+        "flexible insurance",
+        "adjustable coverage",
+        "cash value",
+        "variable premium"
+      ]
+    }
+  ],
+  "claims": {
     "ProcessArea": "Claims",
-    "Topic": "Life Insurance Claim Adjudication Process",
-    "Content": "The ClaimAdjudication process requires the Claimant to submit a certified DeathCertificate and a completed ClaimantStatement. Standard processing time is 14 to 60 days. A ClaimDenial may occur due to MaterialMisrepresentation on the InitialApplication, PolicyLapse due to non-payment of premiums, or if the loss occurs within the ContestabilityPeriod (typically 2 years) under the SuicideClause exclusion."
-  }
-]
+    "Steps": [
+      "Notify the insurance company about the policyholder’s death",
+      "Submit a certified death certificate",
+      "Complete and submit the claim form",
+      "Provide any additional documents if requested",
+      "Wait for claim review and approval (usually 14–60 days)"
+    ],
+    "RequiredDocuments": [
+      "Death certificate",
+      "Claim form",
+      "Policy details",
+      "Identity proof of claimant"
+    ],
+    "CommonReasonsForDenial": [
+      "False or incomplete information in the application",
+      "Policy lapsed due to unpaid premiums",
+      "Death occurred during contestability period under exclusion clauses"
+    ],
+    "SimpleExplanation": "To claim life insurance, you need to inform the company, submit documents, and wait for approval. If everything is correct, the payout is made.",
+    "TechnicalExplanation": "ClaimAdjudication requires submission of DeathCertificate and ClaimantStatement. Processing takes 14–60 days. Denials may occur due to MaterialMisrepresentation, PolicyLapse, or ContestabilityPeriod exclusions such as SuicideClause.",
+    "Keywords": [
+      "claim process",
+      "insurance claim",
+      "how to claim",
+      "claim rejection",
+      "payout"
+    ]
+  },
+  "faq": [
+    {
+      "question": "Which life insurance is the cheapest?",
+      "answer": "Term life insurance is usually the cheapest because it provides coverage for a limited time and does not include savings."
+    },
+    {
+      "question": "Which policy gives savings or money back?",
+      "answer": "Whole life and universal life policies build cash value that you can withdraw or borrow from."
+    },
+    {
+      "question": "Can I cancel my life insurance policy?",
+      "answer": "Yes, you can cancel your policy anytime. However, term policies usually do not return money, while permanent policies may provide some cash value."
+    },
+    {
+      "question": "How long does it take to receive claim money?",
+      "answer": "Most claims are processed within 14 to 60 days after submitting all required documents."
+    },
+    {
+      "question": "Who can be a beneficiary?",
+      "answer": "A beneficiary can be any person chosen by the policyholder, such as family members, spouse, or children."
+    }
+  ]
+}
